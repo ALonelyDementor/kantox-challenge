@@ -8,10 +8,10 @@ defmodule BigChain.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      BigChainWeb.Telemetry,
+      # BigChainWeb.Telemetry,
       BigChain.Repo,
-      {DNSCluster, query: Application.get_env(:big_chain, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: BigChain.PubSub},
+      # {DNSCluster, query: Application.get_env(:big_chain, :dns_cluster_query) || :ignore},
+      # {Phoenix.PubSub, name: BigChain.PubSub},
       # Start a worker by calling: BigChain.Worker.start_link(arg)
       # {BigChain.Worker, arg},
       # Start to serve requests, typically the last entry
