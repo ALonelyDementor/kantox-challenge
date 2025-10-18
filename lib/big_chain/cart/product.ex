@@ -14,6 +14,13 @@ defmodule BigChain.Cart.Product do
     timestamps() # this seems not to be necessary, but let's leave it here in case we find it useful later
   end
 
+  @type t :: %__MODULE__{
+          product_code: String.t(),
+          name: String.t(),
+          description: String.t() | nil,
+          price: integer()
+        }
+
   ## API functions
   def new_product(code, name, description \\ nil, price) do
     %__MODULE__{
