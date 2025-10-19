@@ -5,10 +5,15 @@ defmodule BigChainWeb.Endpoint do
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
-    store: :cookie,
+    # Currently we're saving the cart in the session cookie, however, it has a limit of 4096bytes and
+    # I've crossed it twice during development. This said, it was really not a good idea to leave this as simple
+    # as storing the session in cookies, yet it's already too late to change it now to a database-backed solution
+    # (since we need to work on migrations and relationships). So, for the sake of this exercise, let's store the data server side under an ETS.
+    store: :ets,
     key: "_big_chain_key",
     signing_salt: "44s/4mrU",
-    same_site: "Lax"
+    same_site: "Lax",
+    table: :session_table
   ]
 
   socket "/live", Phoenix.LiveView.Socket,

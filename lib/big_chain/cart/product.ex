@@ -4,14 +4,15 @@ defmodule BigChain.Cart.Product do
   import Ecto.Changeset
   import Ecto.Query
 
-
   @primary_key {:product_code, :string, []}
   schema "products" do
     field :name, :string
     field :description, :string
     field :price, :integer
+    field :quantity, :integer, default: 0
 
-    timestamps() # this seems not to be necessary, but let's leave it here in case we find it useful later
+    # this seems not to be necessary, but let's leave it here in case we find it useful later
+    timestamps()
   end
 
   @type t :: %__MODULE__{
@@ -39,12 +40,42 @@ defmodule BigChain.Cart.Product do
     |> BigChain.Repo.insert()
   end
 
+  def update_stock(product_code, quantity) do
+    case get_product_by_code(product_code) do
+      nil ->
+        {:error, :product_not_found}
+      product ->
+        updated_quantity = product.quantity + quantity
+
+        changeset = Ecto.Changeset.change(product, quantity: updated_quantity)
+        BigChain.Repo.update(changeset)
+    end
+  end
 
   def get_product_by_code(product_code) do
-    query = from u in __MODULE__,
-              where: u.product_code == ^product_code,
-              select: u
-    BigChain.Repo.one(query)
+    __MODULE__
+    |> from(as: :u)
+    |> where([u], u.product_code == ^product_code)
+    |> BigChain.Repo.one()
+  end
+
+  def get_all_products() do
+    BigChain.Repo.all(__MODULE__)
+  end
+
+  def has_enough_quantity?(%__MODULE__{quantity: available}, requested) when available >= requested, do: true
+  def has_enough_quantity?(_product, _requested), do: false
+
+  def get_product_if_at_least_one(product_code) do
+    product =
+      product_code
+      |> get_product_by_code
+
+    if has_enough_quantity?(product, 1) do
+      {:ok, product}
+    else
+      {:error, :insufficient_quantity}
+    end
   end
 
   ## Private functions
@@ -63,5 +94,4 @@ defmodule BigChain.Cart.Product do
     |> unique_constraint(:name)
     |> unique_constraint(:product_code)
   end
-
 end

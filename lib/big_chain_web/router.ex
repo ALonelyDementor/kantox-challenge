@@ -17,7 +17,24 @@ defmodule BigChainWeb.Router do
   scope "/", BigChainWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get("/", PageController, :index)
+  end
+
+  scope "/cart", BigChainWeb do
+    pipe_through :browser
+
+    get("/", CartController, :index)
+    put("/:product_code", CartController, :update)
+    post("/", CartController, :create)
+
+    delete("/:product_code", CartController, :destroy)
+    post("/checkout", CartController, :checkout)
+  end
+
+  scope "/products", BigChainWeb do
+    pipe_through :browser
+
+    get("/", ProductController, :index)
   end
 
   # Other scopes may use custom stacks.
