@@ -22,10 +22,73 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+let Hooks = {};
+Hooks.AddProduct = {
+  DEBOUNCE_MS: 200,
+
+  // Called when a LiveView is mounted, if it includes an element that uses this hook.
+  mounted() {
+    // `this.el` is the form.
+    this.el.addEventListener("click", (e) => {
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        // Ajax request to update session.
+        fetch(this.el.dataset.url, {
+          method: "put",
+          headers: {
+            "x-csrf-token": csrfToken,
+          },
+        });
+      }, this.DEBOUNCE_MS);
+    });
+  },
+};
+Hooks.RemoveProduct = {
+  DEBOUNCE_MS: 200,
+
+  // Called when a LiveView is mounted, if it includes an element that uses this hook.
+  mounted() {
+    // `this.el` is the form.
+    this.el.addEventListener("click", (e) => {
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        // Ajax request to update session.
+        fetch(this.el.dataset.url, {
+          method: "delete",
+          headers: {
+            "x-csrf-token": csrfToken,
+          },
+        });
+      }, this.DEBOUNCE_MS);
+    });
+  },
+};
+Hooks.CheckoutCart = {
+  DEBOUNCE_MS: 200,
+
+  // Called when a LiveView is mounted, if it includes an element that uses this hook.
+  mounted() {
+    // `this.el` is the form.
+    this.el.addEventListener("click", (e) => {
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        // Ajax request to update session.
+        fetch(this.el.dataset.url, {
+          method: "post",
+          headers: {
+            "x-csrf-token": csrfToken,
+          },
+        });
+      }, this.DEBOUNCE_MS);
+    });
+  },
+};
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
+  params: {_csrf_token: csrfToken},
+  hooks: Hooks,
 })
 
 // Show progress bar on live navigation and form submits
