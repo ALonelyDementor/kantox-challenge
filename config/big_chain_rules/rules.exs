@@ -9,5 +9,5 @@ config :big_chain, BigChain.Cart.ProductRules,
     %{
       GR1: %{rule: :buy_one_get_one_free},
       SR1: %{rule: :discount_relative, amount: 10, for_each: 3},
-      CF1: %{rule: :discount_absolute, percentage: 66, for_each: 3}
+      CF1: %{rule: :discount_absolute, percentage: 66.66, for_each: 3}
     }
