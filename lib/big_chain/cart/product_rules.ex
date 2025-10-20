@@ -24,7 +24,6 @@ defmodule BigChain.Cart.ProductRules do
   defp get_rules_for_product(product_code) do
     Application.get_env(:big_chain, BigChain.Cart.ProductRules)[:rules]
     |> Map.get(String.to_atom(product_code), %{})
-    |> tap(&dbg/1)
   end
 
   defp apply_rules_to_product(%{rule: :buy_one_get_one_free}, product, qty) do
